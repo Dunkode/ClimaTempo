@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
-import {getClimaPorCidade} from '../consumer/ApiWeatherConsumer'
+import {getClimaPorCidade, getViaCep} from '../consumer/ApiWeatherConsumer'
 import {getProximosDias} from '../utils/DateUtils'
 import { Button } from '@rneui/base';
 import { Dialog } from '@rneui/themed'
@@ -9,6 +9,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import ButtonWithNoData from '../component/ButtonWithNoData';
 import ButtonWithData from '../component/ButtonWithData';
 import IconSair from 'react-native-vector-icons/AntDesign';
+import { getClimaPorCidadePronto } from '../consumer/ApiWeatherConsumerResultFixed';
 
 
 
@@ -28,7 +29,9 @@ export default function MostraClima({navigation}) {
         {label: 'Marau', value: '4311809'}
       ]);
     
-    const climasList = []
+    var climasList = []
+    const usarAPI = false
+
 
     const [climaCidades ,setClimaCidades] = useState([])
     const [climaCidadeSelecionada, setClimaCidadeSelecionada] = useState([])
@@ -44,70 +47,89 @@ export default function MostraClima({navigation}) {
     
     }
 
-    useLayoutEffect(() => {        
-        geocodes.map(item => {
-            getClimaPorCidade(item.value)
-            .then((data) => {
-
-                data["id"] = item.value
-                climasList.push(data)
-                setClimaCidades(climasList)
-                if (climasList.length == 5){
-                    setVisible(false)
+    useLayoutEffect(() => {    
+        if (usarAPI) {
+            geocodes.map(item => {
+                getClimaPorCidade(item.value)
+                .then((data) => {
+    
+                    data["id"] = item.value
+                    climasList.push(data)
+                    setClimaCidades(climasList)
+                    if (climasList.length == 5){
+                        setVisible(false)
+                    }
+                    setMessageDialog(`Consultando dados da previsão.\nCidades: ${climasList.length}/5`)
+                    
+                    // console.log('Dados recebidos com sucesso!:', data
+                    // 'Tamanho lista: ', climasList.length,
+                    // 'compar: ', !(climasList.length == 5))
+    
+                })
+                .catch((erro) => {console.log(erro)
+                    setTittleDialog('Erro!')
+                    setMessageDialog('Erro ao requisitar dados:\n' + erro)
+                })
                 }
-                
-                // setMessageDialog(`Consultando dados da previsão.\nCidades: ${climasList.length}/5`)
-                // console.log('Dados recebidos com sucesso!:', data[item.value][dias[0]].manha.entidade,
-                // 'Tamanho lista: ', climasList.length,
-                // 'compar: ', !(climasList.length == 5))
-            })
+            )
 
-            .catch((erro) => {console.log(erro)
-                setTittleDialog('Erro!')
-                setMessageDialog('Erro ao requisitar dados!:\n' + erro)
-                // setVisible(false)
-            })
-            }
-        )
+        } else {
+            setVisible(false)
+            climasList = getClimaPorCidadePronto()
+            console.log(climasList.length)
+            setClimaCidades(climasList)
+        }   
 
     }, [])
         
     return (
         <View style={styles.container}>
-            {/* <Dialog 
+            <Dialog 
             isVisible={visible}
             >
-                <Dialog.Title title="Aguarde!"/>
+                <Dialog.Title title={tittleDialog}/>
                 <Text>{messageDialog}</Text>
                 <Dialog.Actions>
                 <Dialog.Button title="Sair" onPress={() => navigation.replace('Menu')}/>
-                <Dialog.Button title="testeconect" onPress={() => console.log(getClimaPorCidade('4314100'))}/>
+                <Dialog.Button title="testeconect" onPress={() => {
+                    getClimaPorCidade('4314100')
+                        .then((data) => console.log(data))
+                        .catch((erro) => {console.log(Object.keys(erro))
+                            console.log(erro["response"])
+                        })
+                    }}/>
+                <Dialog.Button title="testData" onPress={() => {
+                    console.log(climasList.length, value)
+
+                }}/>
                 </Dialog.Actions>
-            </Dialog> */}
+            </Dialog>
 
             <View style={styles.internalView}>
 
-                <Text style={styles.tittle}>MostraClima</Text>
 
-                <DropDownPicker
-                    placeholder='Selecione um cidade!'
-                    loading={true}
-                    open={open}
-                    value={value}
-                    items={geocodes}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setGeocodes}
-                    style={styles.dropdownStyle}
-                    dropDownContainerStyle={{
-                        width: 200,
-                    }}
-                    activityIndicatorColor="red"
-                    activityIndicatorSize={100}
-                />
+                <View style={{alignItems:'center', justifyContent:'center', margin: 20, flex:1}}>
+                    <Text style={styles.tittle}>MostraClima</Text>  
+                    <DropDownPicker
+                        placeholder='Selecione um cidade!'
+                        loading={true}
+                        open={open}
+                        value={value}
+                        items={geocodes}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setGeocodes}
+                        style={styles.dropdownStyle}
+                        dropDownContainerStyle={{
+                            width: 200,
+                        }}
+                        activityIndicatorColor="red"
+                        activityIndicatorSize={100}
+                    />
+                </View>
 
 
-                <View style={{justifyContent:'center', margin: 20}}>
+                <View style={{margin: 20, flex:3}}>
                     {isEmpty(climaCidadeSelecionada) ?
                         dias.map((dia) => {                    
                             return(
@@ -120,7 +142,6 @@ export default function MostraClima({navigation}) {
                             )
                         })
                     :
-                    <View style={{alignItems:'center', justifyContent: 'center'}}>
                         <FlatList
                         data={climaCidadeSelecionada}
                         renderItem={ ({item}) =>
@@ -129,19 +150,13 @@ export default function MostraClima({navigation}) {
                             />
                         }
                         keyExtractor={item => item.id}
-                        />
-                        <Button onPress={() => {
-                        console.log(climaCidadeSelecionada)
-                        }} title='butioness'>
-
-                        </Button>
-                    </View>
+                            />
                     }
 
                 </View> 
 
                 <Button onPress={() => {
-                    if ( climasList == 5 && value){
+                    if (climaCidades.length == 5 && value){
                         getCidadeEscolhida(value)  
 
                     } else {
@@ -155,7 +170,7 @@ export default function MostraClima({navigation}) {
                     style={{justifyContent:'center', alignContent:'center'}}
                 />
 
-                <TouchableOpacity onPress={() => navigation.replace('Menu')}>
+                <TouchableOpacity onPress={() => navigation.push('Menu')}>
                     <IconSair name='leftcircleo' size={60} color= 'white' style={{padding: 20}}/>
                 </TouchableOpacity>
             </View>
@@ -174,6 +189,7 @@ const styles = StyleSheet.create({
         
     },
     dropdownStyle:{
+        flex:1,
         width: 200,
         backgroundColor:'white',
         justifyContent: 'center',

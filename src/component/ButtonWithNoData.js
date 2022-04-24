@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 20,
       borderColor: "#9E9E9E",
+      backgroundColor:'white'
       
     },
     box2:{
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 20,
       borderColor: "#9E9E9E",
+      backgroundColor:'white'
     },
     line:{
       flexDirection: "row",

@@ -8,16 +8,13 @@ export default function ButtonWithData(props) {
     const clima = props.data
 
     useLayoutEffect(() => {
-      console.log('Dia button data: ', clima.id)
     }, [])
 
     return (
       <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
         { !modalVisible ?
             <View style={styles.box1}>
-
               <View style={styles.line}>
-              
                   <View style={{flexDirection: "row", alignItems: 'center'}}>
                     
                     <Text style={styles.titleDate}>
@@ -28,15 +25,12 @@ export default function ButtonWithData(props) {
                       ▶
                     </Text>
                   </View>
-      
               </View>
-
             </View>
             :
             <View style={styles.box2}>
-
               <View style={styles.line}>
-              
+
                 <Text style={styles.titleDate}>
                   {clima.id}
                 </Text>
@@ -46,12 +40,10 @@ export default function ButtonWithData(props) {
                 </Text>
               
               </View>
-              
+
               <ShowTemperatures
                 data={clima}
-              >
-
-              </ShowTemperatures>
+              />
 
             </View>
         }
@@ -61,12 +53,14 @@ export default function ButtonWithData(props) {
 
 const styles = StyleSheet.create({
   box1:{
+      alignItems: 'stretch',
       marginHorizontal:20,
       marginBottom: 20,
       paddingHorizontal: 10,
       borderWidth: 1,
       borderRadius: 20,
       borderColor: "#9E9E9E",
+      backgroundColor:'white'
 
   },
   box2:{
@@ -77,17 +71,19 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 20,
       borderColor: "#9E9E9E",
+      backgroundColor:'white'
   },
   line:{
       flexDirection: "row",
-      alignItems:'center'
+      alignItems:'center',
   },
   titleDate:{
     fontSize: 30,
     color: 'black',
     textAlign: 'left',
     marginEnd: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    flex:1
 
   },
 })
