@@ -8,16 +8,13 @@ export const isEmpty =  (obj) => {
 
 export const transformObjectInList = (obj) => {
     let listObjects = []
-    let i = 0
     if (!isEmpty(obj)){
         Object.keys(obj).map(chave => {
             obj[chave]["id"] = chave
             listObjects.push(obj[chave])
         })
 
-    }
-    console.log(listObjects)
-    
+    }    
     return listObjects
 
 }

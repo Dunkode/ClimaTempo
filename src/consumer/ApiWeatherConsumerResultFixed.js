@@ -1,8 +1,10 @@
 export const getClimaPorCidadePronto = () => {
-   // por algum motivo, qualquer consulta que eu tente fazer 
-   //na API fornecida retorna o Status Code 403.
-   //por isso, consultei manualmente os valores e os inseri aqui, 
-   //no formato que preciso
+   //Por algum motivo, qualquer consulta que eu tente fazer 
+   //na 'API https://apiprevmet3.inmet.gov.br/previsao' retorna o Status Code 403.
+   //Por isso, consultei manualmente os valores e os inseri aqui, 
+   //no formato que preciso.
+   //Usando o Axios ou o método fetch, tenho o retorno de 403.
+   //O mesmo não ocorre com tentativas de acesso a outras API's, como a da ViaCep.
 
    return [ new Object (
 

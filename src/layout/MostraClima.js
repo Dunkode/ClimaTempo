@@ -30,6 +30,9 @@ export default function MostraClima({navigation}) {
       ]);
     
     var climasList = []
+
+    //Alterando essa váriavel, poderá ser usado o consumo por API
+    //Verificar mais informações na assinatura do método getClimaPorCidadePronto
     const usarAPI = false
 
 
@@ -39,11 +42,9 @@ export default function MostraClima({navigation}) {
     
     
     const getCidadeEscolhida = (geocode) => {
-        console.log(geocode)
         var climaSelecionadoTemp = getObjectInList(climaCidades, geocode)
         climaSelecionadoTemp = transformObjectInList(climaSelecionadoTemp[geocode])
         setClimaCidadeSelecionada(climaSelecionadoTemp)
-        // console.log('getCidadeEscolhida:', climaSelecioandoTemp)
     
     }
 
@@ -60,13 +61,9 @@ export default function MostraClima({navigation}) {
                         setVisible(false)
                     }
                     setMessageDialog(`Consultando dados da previsão.\nCidades: ${climasList.length}/5`)
-                    
-                    // console.log('Dados recebidos com sucesso!:', data
-                    // 'Tamanho lista: ', climasList.length,
-                    // 'compar: ', !(climasList.length == 5))
-    
+                        
                 })
-                .catch((erro) => {console.log(erro)
+                .catch((erro) => {console.log(erro.response)
                     setTittleDialog('Erro!')
                     setMessageDialog('Erro ao requisitar dados:\n' + erro)
                 })
@@ -90,18 +87,7 @@ export default function MostraClima({navigation}) {
                 <Dialog.Title title={tittleDialog}/>
                 <Text>{messageDialog}</Text>
                 <Dialog.Actions>
-                <Dialog.Button title="Sair" onPress={() => navigation.replace('Menu')}/>
-                <Dialog.Button title="testeconect" onPress={() => {
-                    getClimaPorCidade('4314100')
-                        .then((data) => console.log(data))
-                        .catch((erro) => {console.log(Object.keys(erro))
-                            console.log(erro["response"])
-                        })
-                    }}/>
-                <Dialog.Button title="testData" onPress={() => {
-                    console.log(climasList.length, value)
-
-                }}/>
+                    <Dialog.Button title="Sair" onPress={() => navigation.replace('Menu')}/>
                 </Dialog.Actions>
             </Dialog>
 

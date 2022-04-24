@@ -14,11 +14,11 @@ export default function ShowTemperatures(props) {
     var list = [manha, tarde, noite]
     var listPeriodos = ['Manhã', 'Tarde', 'Noite']
 
-    var i = 0
-
     useLayoutEffect(() => {
         if (temPeriodos){
             var listAux = []
+            var i = 0
+            
             list.map((periodo) => {
                 periodo['id'] = i
                 i++
