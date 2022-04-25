@@ -23,7 +23,7 @@ export default function MostraClima({navigation}) {
     const [value, setValue] = useState();
     const [geocodes, setGeocodes] = useState([
         {label: 'Passo Fundo', value: '4314100'},
-        {label: 'Marau', value: '4304705'},
+        {label: 'Carazinho', value: '4304705'},
         {label: 'Soledade', value: '4320800'},
         {label: 'Erechim', value: '4307005'},
         {label: 'Marau', value: '4311809'}
@@ -33,7 +33,7 @@ export default function MostraClima({navigation}) {
 
     //Alterando essa váriavel, poderá ser usado o consumo por API
     //Verificar mais informações na assinatura do método getClimaPorCidadePronto
-    const usarAPI = false
+    const usarAPI = true
 
 
     const [climaCidades ,setClimaCidades] = useState([])
