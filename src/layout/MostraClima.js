@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import {getClimaPorCidade, getViaCep} from '../consumer/ApiWeatherConsumer'
 import {getProximosDias} from '../utils/DateUtils'
 import { Button } from '@rneui/base';
@@ -33,7 +33,7 @@ export default function MostraClima({navigation}) {
 
     //Alterando essa váriavel, poderá ser usado o consumo por API
     //Verificar mais informações na assinatura do método getClimaPorCidadePronto
-    const usarAPI = true
+    const usarAPI = false
 
 
     const [climaCidades ,setClimaCidades] = useState([])
@@ -52,8 +52,7 @@ export default function MostraClima({navigation}) {
         if (usarAPI) {
             geocodes.map(item => {
                 getClimaPorCidade(item.value)
-                .then((data) => {
-    
+                .then((data) => {    
                     data["id"] = item.value
                     climasList.push(data)
                     setClimaCidades(climasList)
@@ -78,6 +77,14 @@ export default function MostraClima({navigation}) {
         }   
 
     }, [])
+
+    useEffect(() => {
+        if (value){
+            getCidadeEscolhida(value)       
+
+        }
+    }, [value])
+    
         
     return (
         <View style={styles.container}>
@@ -141,7 +148,7 @@ export default function MostraClima({navigation}) {
 
                 </View> 
 
-                <Button onPress={() => {
+                {/* <Button onPress={() => {
                     if (climaCidades.length == 5 && value){
                         getCidadeEscolhida(value)  
 
@@ -154,7 +161,7 @@ export default function MostraClima({navigation}) {
                 }}
                     title='Pesquisar cidade selecioanda!'
                     style={{justifyContent:'center', alignContent:'center'}}
-                />
+                /> */}
 
                 <TouchableOpacity onPress={() => navigation.push('Menu')}>
                     <IconSair name='leftcircleo' size={60} color= 'white' style={{padding: 20}}/>
